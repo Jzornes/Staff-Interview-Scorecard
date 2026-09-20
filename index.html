@@ -125,10 +125,10 @@
   .sc-photo-or { font-size: 10px; color: var(--ink-soft); text-align: center; }
   .sc-photo-url-input { width: 100%; font-size: 10.5px; padding: 5px 7px; border: 1px solid var(--hairline); border-radius: 6px; text-align: center; background: var(--surface); }
 
-  .sc-chart-row { display: flex; gap: 20px; flex-wrap: wrap; }
-  .sc-chart-block { flex: 1 1 180px; min-width: 160px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .sc-chart-row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .sc-chart-block { flex: 1 1 380px; min-width: 320px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .sc-chart-label { font-size: 11px; font-weight: 700; color: var(--ink-soft); text-align: center; }
-  .sc-chart-preview { width: 100%; max-width: 220px; height: 130px; border-radius: 10px; overflow: hidden; border: 2px solid var(--hairline); background: var(--paper); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .sc-chart-preview { width: 100%; max-width: 440px; height: 280px; border-radius: 10px; overflow: hidden; border: 2px solid var(--hairline); background: var(--paper); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .sc-chart-preview img { width: 100%; height: 100%; object-fit: contain; }
 
   .sc-trait-ref { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--hairline); }
@@ -1117,7 +1117,8 @@
     return renderTechRecapFor((state.mine.tech && state.mine.tech[candId]) || {}, 'Software & Tools');
   }
 
-  function resizeImageFile(file, maxSize) {
+  function resizeImageFile(file, maxSize, quality) {
+    quality = quality || 0.82;
     return new Promise(function(resolve, reject){
       var reader = new FileReader();
       reader.onload = function(e){
@@ -1131,7 +1132,7 @@
             canvas.height = Math.max(1, Math.round(h * scale));
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL('image/jpeg', 0.82));
+            resolve(canvas.toDataURL('image/jpeg', quality));
           } catch (err) { reject(err); }
         };
         img.onerror = function(){ reject(new Error('Could not read image')); };
@@ -1236,7 +1237,7 @@
         if (!file) return;
         uploadBtn.disabled = true;
         uploadBtn.textContent = 'Processing\u2026';
-        resizeImageFile(file, 500).then(function(dataUrl){
+        resizeImageFile(file, 900, 0.92).then(function(dataUrl){
           meta[fieldKey] = dataUrl;
           saveCandidates();
           img.src = dataUrl; img.style.display = ''; placeholder.style.display = 'none';
